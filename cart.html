@@ -1,62 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Your Shopping Cart</title>
-<meta charset="utf-8" />
-<link rel="stylesheet" href="style.css" media="screen" type="text/css" />
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-<script type="text/javascript" src="js/jquery.store.js"></script>
-<script type="text/javascript"
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Shopping Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
-
 <body id="cart-page">
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="index.html">Tonmoy Shop</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="checkout.html">Checkout</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-<div id="site" class="cartcontent">
-	<header id="masthead">
-	</header>
-	<div id="content">
-		<h1>Your Shopping Cart</h1>
-		<form id="shopping-cart" action="cart.html" >
-			<table class="shopping-cart">
-			  <thead>
-				<tr>
-					<th scope="col">Item</th>
-					<th scope="col">Qty</th>
-					<th scope="col" colspan="2">Price</th>
-				</tr>
-			  </thead>
-			  <tbody>
-			  
-			  </tbody>
-			</table>
-			<p id="sub-total">
-				<strong>Sub Total</strong>: <span id="stotal"></span>
-			</p>
-			<ul id="shopping-cart-actions">
-				<li>
-					<input type="submit" name="update" id="update-cart" class="btn" value="Update Cart" />
-				</li>
-				<li>
-					<input type="submit" name="delete" id="empty-cart" class="btn" value="Empty Cart" />
-				</li>
-				<li>
-					<a href="index.html" class="btn">Continue Shopping</a>
-				</li>
-				<li>
-					<a href="checkout.html" class="btn">Go To Checkout</a>
-				</li>
-			</ul>
-		</form>
-	</div>
-	
-	
+    <div class="container mt-5">
+        <h1>Your Shopping Cart</h1>
+        <form id="shopping-cart">
+            <table class="table table-bordered shopping-cart">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Qty</th>
+                        <th colspan="2">Price</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    <!-- Dynamically filled items will appear here -->
+                </tbody>
+            </table>
 
-</div>
+            <p><strong>Sub Total:</strong> <span id="stotal">0</span> BDT</p>
 
-<footer id="site-info">
-		Copyright &copy; FarmEasy 2021 <br> Made with &#10084;&#65039; By Sanket Kadam
-	</footer>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a href="index.html" class="btn btn-primary">Continue Shopping</a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="checkout.html" class="btn btn-success">Go To Checkout</a>
+                </li>
+            </ul>
+        </form>
+    </div>
 
+    <footer class="footer text-center mt-5">
+        <p>&copy; 2024 Tonmoy Shop | Designed by Tonmoy</p>
+    </footer>
+
+    <script type="text/javascript">
+        const cartItems = [
+            { id: 1, name: 'T-shirt', qty: 1, price: 600 },
+            { id: 2, name: 'Custom T-Shirt', qty: 2, price: 450 }
+        ];
+
+        function updateCart() {
+            let total = 0;
+            const cartTableBody = $('#cart-items');
+            cartTableBody.empty();
+            cartItems.forEach(item => {
+                total += item.qty * item.price;
+                cartTableBody.append(`
+                    <tr>
+                        <td>${item.name}</td>
+                        <td><input type="number" class="item-qty" data-id="${item.id}" value="${item.qty}" min="1" /></td>
+                        <td>${item.price} BDT</td>
+                        <td>${item.qty * item.price} BDT</td>
+                    </tr>
+                `);
+            });
+
+            $('#stotal').text(total);
+        }
+
+        $(document).on('change', '.item-qty', function() {
+            const itemId = $(this).data('id');
+            const newQty = $(this).val();
+            const item = cartItems.find(i => i.id === itemId);
+            if (item) {
+                item.qty = newQty;
+            }
+            updateCart();
+        });
+
+        $(document).ready(function() {
+            updateCart();
+        });
+    </script>
 </body>
-</html>	
+</html>
